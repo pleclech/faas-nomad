@@ -176,13 +176,12 @@ func makeDependencies(statsDAddr string, thisAddr string, nomadConfig fntypes.No
 	clientConfig := c.ClientConfig(region, nomadConfig.Address, nomadConfig.TLSEnabled)
 	clientConfig.SecretID = nomadConfig.ACLToken
 	if nomadConfig.TLSEnabled {
-		clientConfig.TLSConfig = &api.TLSConfig{
+		api.ConfigureTLS(clientConfig.HttpClient, &api.TLSConfig{
 			CACert:     nomadConfig.TLSCA,
 			ClientCert: nomadConfig.TLSCert,
 			ClientKey:  nomadConfig.TLSPrivateKey,
 			Insecure:   nomadConfig.TLSSkipVerify,
-		}
-		clientConfig.ConfigureTLS()
+		})
 	}
 
 	nomadClient, err := api.NewClient(clientConfig)
